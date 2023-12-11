@@ -25,6 +25,8 @@ class Metadata:
     images_dict_li = None
     nsfw = False
 
+    model_path = None
+
     def __init__(self, id_string: str):
         self.__id_string = id_string
 
@@ -191,17 +193,8 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
             max_img_count == None:
         raise UnexpectedException(
             'download_model received a None type in one of its parameter')
-
     metadata = Metadata(input_str)
-
-    print(colored(
-        f"""Now downloading \"{metadata.model_name}\"...
-            - Model ID: {metadata.model_id}
-            - Version ID: {metadata.version_id}\n""",
-        'blue'))
-
     model_res, filename = _get_filename_and_model_res(input_str, metadata)
-
     # Create empty directory recursively
     filename_without_ext, filename_ext = os.path.splitext(filename)
     dst_dir_path = create_dir_path(
@@ -220,11 +213,5 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
     if download_image:
         _download_image(
             dst_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
-
-    print(colored(
-        f"""\nDownload completed for \"{metadata.model_name}\" 
-            - Model ID: {metadata.model_id}
-            - Version ID: {metadata.version_id}
-            - Path: {model_path}\n""", 'green'))
-
-    print('---------------------------\n')
+    metadata.model_path = model_path
+    return metadata
