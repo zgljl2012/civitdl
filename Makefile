@@ -20,3 +20,16 @@ clean:
 
 uninstall: clean
 	pip3 uninstall civitdl -y
+
+clear:
+	@rm -rf dist build
+
+clear-win:
+	@rd /s /q "dist"
+	@rd /s /q "build"
+
+build: clear-win
+	@python setup.py bdist_wheel
+
+publish: build
+	@python -m twine upload dist/*
